@@ -7,7 +7,7 @@ void main() {
 
 class Todo {
   bool completed = false;
-  String content = 'Deliver today\'s talk';
+  String content = '';
 }
 
 class TodoPage extends StatefulWidget {
@@ -16,12 +16,13 @@ class TodoPage extends StatefulWidget {
 }
 
 class _TodoPageState extends State<TodoPage> {
-  List<Todo> todos = [Todo(), Todo(), Todo()];
+  List<Todo> todos = [];
 
   _changeStatus(int i) =>
       setState(() => todos[i].completed = !todos[i].completed);
   _removeTodo(int i) => setState(() => todos.removeAt(i));
   _newTodo() => setState(() => todos.add(Todo()));
+  _updateContent(String text, int i) => setState(() => todos[i].content = text);
 
   @override
   Widget build(BuildContext context) {
@@ -60,13 +61,19 @@ class _TodoPageState extends State<TodoPage> {
                               : Icons.radio_button_unchecked_outlined),
                           onPressed: () => _changeStatus(i),
                         ),
-                        title: Text(
-                          todos[i].content,
+                        title: TextField(
+                          autofocus: true,
+                          decoration: null,
+                          controller:
+                              TextEditingController(text: todos[i].content),
+                          maxLines: null,
+                          onSubmitted: (text) => _updateContent(text, i),
                           style: TextStyle(
                               fontSize: 20,
                               decoration: todos[i].completed
                                   ? TextDecoration.lineThrough
                                   : null),
+                          textInputAction: TextInputAction.done,
                         ),
                         trailing: IconButton(
                             icon: Icon(Icons.horizontal_rule_outlined),
