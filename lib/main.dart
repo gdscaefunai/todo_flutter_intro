@@ -18,6 +18,11 @@ class TodoPage extends StatefulWidget {
 class _TodoPageState extends State<TodoPage> {
   List<Todo> todos = [Todo(), Todo(), Todo()];
 
+  _changeStatus(int i) =>
+      setState(() => todos[i].completed = !todos[i].completed);
+  _removeTodo(int i) => setState(() => todos.removeAt(i));
+  _newTodo() => setState(() => todos.add(Todo()));
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -49,17 +54,26 @@ class _TodoPageState extends State<TodoPage> {
                   itemCount: todos.length,
                   itemBuilder: (context, i) {
                     return ListTile(
-                        leading: Icon(Icons.radio_button_unchecked_outlined),
+                        leading: IconButton(
+                          icon: Icon(todos[i].completed
+                              ? Icons.task_alt
+                              : Icons.radio_button_unchecked_outlined),
+                          onPressed: () => _changeStatus(i),
+                        ),
                         title: Text(
                           todos[i].content,
-                          style: TextStyle(fontSize: 20),
+                          style: TextStyle(
+                              fontSize: 20,
+                              decoration: todos[i].completed
+                                  ? TextDecoration.lineThrough
+                                  : null),
                         ),
-                        trailing: Icon(Icons.horizontal_rule_outlined));
+                        trailing: IconButton(
+                            icon: Icon(Icons.horizontal_rule_outlined),
+                            onPressed: () => _removeTodo(i)));
                   }),
-          floatingActionButton: FloatingActionButton(
-            child: Icon(Icons.add),
-            onPressed: () {},
-          ),
+          floatingActionButton:
+              FloatingActionButton(child: Icon(Icons.add), onPressed: _newTodo),
         ));
   }
 }
