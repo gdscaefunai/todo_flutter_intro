@@ -16,10 +16,12 @@ class TodoPage extends StatefulWidget {
 }
 
 class _TodoPageState extends State<TodoPage> {
+  bool isLight = true;
   List<Todo> todos = [];
 
   _changeStatus(int i) =>
       setState(() => todos[i].completed = !todos[i].completed);
+  _changeTheme() => setState(() => isLight = !isLight);
   _removeTodo(int i) => setState(() => todos.removeAt(i));
   _newTodo() => setState(() => todos.add(Todo()));
   _updateContent(String text, int i) => setState(() => todos[i].content = text);
@@ -31,17 +33,19 @@ class _TodoPageState extends State<TodoPage> {
         theme: ThemeData(
             primarySwatch: Colors.lightBlue,
             accentColor: Colors.lightBlue,
-            brightness: Brightness.light,
+            brightness: isLight ? Brightness.light : Brightness.dark,
             fontFamily: 'GoogleSans'),
         home: Scaffold(
           appBar: AppBar(
             leading: Padding(
                 padding: EdgeInsets.only(left: 16),
-                child: Image.asset(kLogoColor)),
+                child: Image.asset(isLight ? kLogoColor : kLogoWhite)),
             title: Text('Todo'),
-            backgroundColor: Colors.white,
+            backgroundColor: isLight ? Colors.white : null,
             actions: [
-              IconButton(onPressed: () {}, icon: Icon(Icons.dark_mode))
+              IconButton(
+                  onPressed: _changeTheme,
+                  icon: Icon(isLight ? Icons.dark_mode : Icons.light_mode))
             ],
           ),
           body: todos.isEmpty
